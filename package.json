@@ -1,0 +1,28 @@
+{
+  "name": "course-project-fs1020",
+  "version": "1.0.0",
+  "description": "Backend application consisting of a RESTful JSON API for a \"contact us\" form.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node -r esm index.js",
+    "dev": "nodemon -r esm index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/maksvet/course-project-fs1020.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/maksvet/course-project-fs1020/issues"
+  },
+  "homepage": "https://gitlab.com/maksvet/course-project-fs1020#readme",
+  "dependencies": {
+    "esm": "^3.2.25",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
