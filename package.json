@@ -12,16 +12,19 @@
     "type": "git",
     "url": "git+https://gitlab.com/maksvet/course-project-fs1020.git"
   },
-  "author": "",
+  "author": "Maksim Svetlakov",
   "license": "ISC",
   "bugs": {
     "url": "https://gitlab.com/maksvet/course-project-fs1020/issues"
   },
   "homepage": "https://gitlab.com/maksvet/course-project-fs1020#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.1"
   },
   "devDependencies": {

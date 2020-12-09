@@ -1,9 +1,10 @@
 
 import express from 'express'
 import routes from './src/routes.js'
+require("dotenv").config()
 
 const app = express();
-const port = 3007;
+const port = process.env.PORT || 3008
 
 app.use(express.json());
 app.use('/', routes);
@@ -15,7 +16,7 @@ app.use((req, res, next) => {
     next(error)
    })
    
-// error handler middleware
+// error handler middleware, commented out error.message, but still use it for development
 app.use((error, req, res, next) => {
     res.status(error.status || 500).send({
         error: {
