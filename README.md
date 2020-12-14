@@ -8,3 +8,6 @@ npm install (for installing dependencies)
 npm start 
 npm run dev (developer mode while in Postman)
 
+Postman: Authorisation type: Bearer token
+Requires manual copy/paste
+
