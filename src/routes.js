@@ -1,84 +1,14 @@
 import express from 'express'
-import * as help from './helpFns.js'//not used yet
 import { v4 as uuidv4 } from 'uuid'
 const router = express.Router()
 const bodyParser = require('body-parser')//not used yet
 const jwt = require("jsonwebtoken")
 const bcrypt = require('bcryptjs')//not used yet
 const entries =[]// an array to store entries, for now
+import { badRequest, objProps, objUserProps, message, validateItem, validateUser, validateString,
+    validateEmail, validatePhone, validatePswd, returnMessage 
+} from './helpFns.js'
 
-// Bad Request response function
-const badRequest = (input, res) => {
-    res.status(400).json(input)
-}
-
-//general request body validation 
-const objProps = ["name", "email", "phoneNumber", "content"]
-const message = {
-    message: "validation error", 
-    invalid: []
-}
-const validateItem = (req, res, next) => {
-    message.invalid = []
-    const objKeys = (req) => Object.keys(req.body)//count keys in req, compare to etalon object
-    const errors = (request) => objProps.filter((properties) => !objKeys(request).includes(properties))
-    if (objKeys(req).length < 4) {
-        errors(req).forEach(element => message.invalid.push(element))
-        return badRequest(message, res)
-    }
-    next()
-}
-//new user general validation, validation middleware could be combined with validateItem
-const validateUser = (req, res, next) => {
-    message.invalid = []
-    const objKeys = (req) => Object.keys(req.body)
-    const errors = (request) => objUserProps.filter((properties) => !objKeys(request).includes(properties))
-    if (objKeys(req).length < 3) {
-        errors(req).forEach(element => message.invalid.push(element))
-        return badRequest(message, res)
-    }
-    next()
-}
-// strings validation for name, only latin letters and spaces accepted
-const validateString = (req, res, next) => {
-    const letters = /^[A-Za-z ]+$/;
-    if(!req.body.name.match(letters) || !req.body.name.value == 0){
-        message.invalid.push("name")
-    }
-    next()
-
-}
-// password for user creation validation. Passwords between 8-16 characters accepted
-const validatePswd = (req, res, next) => {
-    const passw = /^[A-Za-z]\w{8,16}$/
-    if (!req.body.password.match(passw)){
-        message.invalid.push("password")
-    }
-    next()
-}
-// //email validation middleware, generic 
-const validateEmail = (req, res, next) => {
-    const mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-    if(!req.body.email.match(mailformat)){
-        message.invalid.push("email")
-    }
-    next()
-}
-//phone number validation: the only format accepted is 10 digits, no spaces, no characters
-const validatePhone = (req, res, next) => {
-    const phoneno = /^\d{10}$/;
-    if(!req.body.phoneNumber.match(phoneno)){
-        message.invalid.push("phoneNumber")
-    }
-    next()
-}
-//middleware for Bad Request object return based on lenght of object's array entries
-const returnMessage =(req, res, next) => {
-    if (message.invalid.length > 0){
-        return badRequest(message, res)
-    }
-    next()
-}
 //Route to create an entry when the user submits their contact form:
 router.post('/contact_form/entries', validateItem, validateString, validateEmail, validatePhone, returnMessage, (req, res) => {
     //unique id generator
@@ -90,7 +20,7 @@ router.post('/contact_form/entries', validateItem, validateString, validateEmail
 
 //Route to create a user, saving users in array for now
 const users = []
-const objUserProps = ["name", "password", "email"]
+//const objUserProps = ["name", "password", "email"]
 router.post('/users', validateUser, validateString, validatePswd, validateEmail, returnMessage, (req, res) => {
     req.body.id = uuidv4()
     const requestFilter = ({ id, name, email }) => ({ id, name, email })

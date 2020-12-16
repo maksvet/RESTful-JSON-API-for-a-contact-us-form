@@ -1,7 +1,8 @@
 
 import express from 'express'
 import routes from './src/routes.js'
-require("dotenv").config()
+import dotenv from 'dotenv'
+dotenv.config()
 
 const app = express();
 const port = process.env.PORT || 3008
@@ -21,7 +22,7 @@ app.use((error, req, res, next) => {
     res.status(error.status || 500).send({
         error: {
         status: error.status || 500,
-        message: /*error.message ||*/ "Internal Server Error",
+        message: error.message || "Internal Server Error",
         },
     });
 });
