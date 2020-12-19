@@ -10,7 +10,7 @@ const port = process.env.PORT || 3008
 app.use(express.json());
 app.use('/', routes);
 app.use((req, res, next) => {
-    res.status(404).send({
+    return res.status(404).send({
     status: 404,
     message: "not found"
     })
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
    
 // error handler middleware, commented out error.message, but still use it for development
 app.use((error, req, res, next) => {
-    res.status(error.status || 500).send({
+    return res.status(error.status || 500).send({
         error: {
         status: error.status || 500,
         message: error.message || "Internal Server Error",

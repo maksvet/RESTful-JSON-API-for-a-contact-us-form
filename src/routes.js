@@ -1,20 +1,70 @@
 import express from 'express'
 import { v4 as uuidv4 } from 'uuid'
+import util from 'util'
+import fs from 'fs'
+import path from 'path'
+const readFile = util.promisify(fs.readFile)
+const writeFile = util.promisify(fs.writeFile)
+const entrPath = path.resolve('data/entries.json')
+const usrPath = path.resolve('data/users.json')
 const router = express.Router()
-const bodyParser = require('body-parser')//not used yet
-const jwt = require("jsonwebtoken")
-const bcrypt = require('bcryptjs')//not used yet
-const entries =[]// an array to store entries, for now
+const bodyParser = import('body-parser')//not used
+import jwt from 'jsonwebtoken'
+const bcrypt = import('bcryptjs')//not used yet
+//const entries =[]// an array to store entries, for now
 import { badRequest, objProps, objUserProps, message, validateItem, validateUser, validateString,
     validateEmail, validatePhone, validatePswd, returnMessage 
 } from './helpFns.js'
 
+async function readItems() {
+    const json = await readFile(entrPath);
+    return JSON.parse(json);
+  }
+  
+  
+// //file reading function for get
+// async function readAll(pathTo) {
+//     const json = await readFile(pathTo,function (err, data) {
+//         if (err) {return res.status(404).json("Resourse not found")}
+//         return data
+//     })
+//     return JSON.parse(json)
+// }
+
+// // file reading function for post
+// async function readPost(pathTo) {
+//     const json = await readFile(pathTo,function (err, data) {
+//         if (err) {return []}
+//         return data
+//     })
+//     return JSON.parse(json)
+// }
+
+//users file writing function
+async function writeAll(item, pathTo) {
+    const json = JSON.stringify(item, null, 2)
+    return writeFile(pathTo, json)
+}
+
+//users file reading function
+// async function readAllEntries() {
+//     const json = await readFile(entrPath);
+//     return JSON.parse(json);
+// }
+//users file writing function
+// async function writeEntries(item) {
+//     const json = JSON.stringify(item, null, 2);
+//     return writeFile(entrPath, json)
+// }
+
 //Route to create an entry when the user submits their contact form:
-router.post('/contact_form/entries', validateItem, validateString, validateEmail, validatePhone, returnMessage, (req, res) => {
+router.post('/contact_form/entries', validateItem, validateString, validateEmail, validatePhone, returnMessage, async (req, res) => {
     //unique id generator
     req.body.id = uuidv4()
+    const entries = await readItems(entrPath)
     const requestOrganizer = ({ id, name, email, phoneNumber, content }) => ({ id, name, email, phoneNumber, content })//used destructuring for keeping order of object
     entries.push(requestOrganizer(req.body))
+    writeAll(entries, entrPath)
     return res.status(201).json(requestOrganizer(req.body))
 })
 
@@ -25,6 +75,7 @@ router.post('/users', validateUser, validateString, validatePswd, validateEmail,
     req.body.id = uuidv4()
     const requestFilter = ({ id, name, email }) => ({ id, name, email })
     users.push(requestFilter(req.body))
+    writeUsers(users)
     return res.status(201).json(requestFilter(req.body))
 })
 
@@ -62,8 +113,10 @@ const authToken = (req, res, next) => {
     }
 )}
 
-router.get('/contact_form/entries', authToken, (req, res) => 
+router.get('/contact_form/entries', authToken, async (req, res) => {
+    const entries = await readItems(entrPath)
     res.status(200).send(entries)
+    }
 )
 
 //Route to get a specific submission when given an ID alongside a valid JWT:
