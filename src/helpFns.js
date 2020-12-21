@@ -1,4 +1,4 @@
-
+import jwt from 'jsonwebtoken'
 
 // Bad Request response function
 const badRequest = (input, res) => {
@@ -73,6 +73,18 @@ const returnMessage =(req, res, next) => {
     }
     next()
 }
+//token authorisation middleware
+const authToken = (req, res, next) => {
+    const reqHeader = req.headers['authorization']
+    const token = reqHeader && reqHeader.split(' ')[1]
+    const message = { message: "token not provided" }
+    if (!token) return res.status(403).json(message)
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+    if (err) return res.status(403).json(message)
+
+    next()
+    }
+)}
     export { badRequest, objProps, message, validateItem, validateString, objUserProps,
-        validateUser, validateEmail, validatePhone, validatePswd, returnMessage 
+        validateUser, validateEmail, validatePhone, validatePswd, returnMessage, authToken
     }

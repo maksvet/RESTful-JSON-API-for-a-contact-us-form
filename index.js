@@ -15,14 +15,14 @@ app.use((req, res, next) => {
     message: "not found"
     })
     next(error)
-   })
-   
-// error handler middleware, commented out error.message, but still use it for development
+})
+
+// error handler middleware
 app.use((error, req, res, next) => {
     return res.status(error.status || 500).send({
         error: {
         status: error.status || 500,
-        message: error.message || "Internal Server Error",
+        message: "Internal Server Error",
         },
     });
 });
