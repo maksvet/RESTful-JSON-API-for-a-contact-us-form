@@ -1,4 +1,4 @@
-# Course Project FS1020
+# REST API Express
 Backend application consisting of a RESTful JSON API for a "contact us" form.
 Server port: 3007
 Terminal commands:
